@@ -1,0 +1,37 @@
+name: Publish Python Package to PyPI (OIDC with uv)
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish-to-pypi:
+    name: Build and publish to PyPI via OIDC with uv
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install build dependencies using uv
+        run: uv install build
+
+      - name: Build the package
+        run: python -m build
+
+      - name: Publish to PyPI (OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+            skip-existing: true
