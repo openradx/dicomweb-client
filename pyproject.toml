@@ -59,6 +59,15 @@ test = [
     "types-requests==2.27.14",
     "types-Pillow==9.0.8",
 ]
+docs = [
+    "sphinx-pyreverse==0.0.17",
+    "sphinx-rtd-theme==1.0.0",
+    "sphinxcontrib-autoprogram==0.1.7",
+    "sphinxcontrib-websupport==1.2.4",
+    "sphinx-autodoc-typehints==1.12.0",
+]
+
+[dependency-groups]
 dev = [
     "mypy==0.982",
     "flake8==6.1.0",
@@ -69,19 +78,9 @@ dev = [
     "types-requests==2.27.14",
     "types-Pillow==9.0.8",
 ]
-docs = [
-    "sphinx-pyreverse==0.0.17",
-    "sphinx-rtd-theme==1.0.0",
-    "sphinxcontrib-autoprogram==0.1.7",
-    "sphinxcontrib-websupport==1.2.4",
-    "sphinx-autodoc-typehints==1.12.0",
-]
 
 [project.scripts]
 dicomweb_client = "dicomweb_client.cli:_main"
-flake8 = "flake8:main"
-mypy = "mypy:main"
-pytest = "pytest:main"
 
 [project.urls]
 homepage = "https://github.com/openradx/pydicomweb"
