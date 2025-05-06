@@ -44,4 +44,4 @@ jobs:
     - name: Check type hints with mypy
       run: .venv/bin/mypy src tests
     - name: Test with pytest
-      run: .venv/bin/pytest --cov=dicomweb_client --cov-fail-under=65 tests
+      run: .venv/bin/pytest --cov=pydicomweb_client --cov-fail-under=65 tests
