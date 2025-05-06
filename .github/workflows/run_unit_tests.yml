@@ -31,17 +31,14 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }} 
     - name: Install uv
-      run: |
-        curl -Ls https://astral.sh/uv/install.sh | sh
-        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-    - name: Create virtual environment and install dependencies
-      run: |
-        uv venv
-        source .venv/bin/activate
-        uv pip install .[test]
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: "0.6.0"
+    - name: Install dependencies
+      run: uv sync
     - name: Lint with flake8
-      run: .venv/bin/flake8 src tests --exclude=.venv,build,.eggs  
+      run: uv run flake8 src tests --exclude=.venv,build,.eggs  
     - name: Check type hints with mypy
-      run: .venv/bin/mypy src tests
+      run: uv run mypy src tests
     - name: Test with pytest
-      run: .venv/bin/pytest --cov=pydicomweb_client --cov-fail-under=65 tests
+      run: uv run pytest --cov=pydicomweb_client --cov-fail-under=65 tests

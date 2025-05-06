@@ -16,6 +16,7 @@ authors = [
 ]
 maintainers = [
     { name = "Sumantra Sharma" },
+    { name = "Kai Schlamp" },
 ]
 license = { text = "LICENSE" }
 classifiers = [
