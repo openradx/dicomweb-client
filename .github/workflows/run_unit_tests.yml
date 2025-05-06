@@ -34,10 +34,10 @@ jobs:
       with:
         version: "0.6.0"
     - name: Install dependencies
-      run: uv sync
+      run: uv sync --dev
     - name: Lint with flake8
-      run: uv pip run flake8 src tests --exclude=.venv,build,.eggs  
+      run: uv run flake8 src tests --exclude=.venv,build,.eggs  
     - name: Check type hints with mypy
-      run: uv pip run mypy src tests
+      run: uv run mypy src tests
     - name: Test with pytest
-      run: uv pip run pytest --cov=pydicomweb_client --cov-fail-under=65 tests
+      run: uv run pytest --cov=pydicomweb_client --cov-fail-under=65 tests
