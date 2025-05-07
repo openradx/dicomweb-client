@@ -1,17 +1,15 @@
 # DICOMweb Client
 
-[![Build Status](https://github.com/ImagingDataCommons/dicomweb-client/actions/workflows/run_unit_tests.yml/badge.svg)](https://github.com/ImagingDataCommons/dicomweb-client/actions)
-[![PyPi Distribution](https://img.shields.io/pypi/v/dicomweb-client.svg)](https://pypi.python.org/pypi/dicomweb-client/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/dicomweb-client.svg)](https://pypi.org/project/dicomweb-client/)
-[![Downloads](https://pepy.tech/badge/dicomweb-client)](https://pepy.tech/project/dicomweb-client)
+[![Build Status](https://github.com/openradx/pydicomweb/actions/workflows/run_unit_tests.yml/badge.svg)](https://github.com/openradx/pydicomweb/actions)
+[![PyPi Distribution](https://img.shields.io/pypi/v/pydicomweb-client.svg)](https://pypi.python.org/pypi/pydicomweb-client/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pydicomweb-client.svg)](https://pypi.org/project/pydicomweb-client/)
 
-
-Python client for DICOMweb services.
-
+This repository is a fork of [dicomweb-client](https://github.com/openradx/pydicomweb), with enhancements that introduce additional parameters to GET requests. It is currently maintained by [OpenRadX](https://github.com/openradx)
 
 ## Documentation
 
 Please refer to the online documentation at [dicomweb-client.readthedocs.io](https://dicomweb-client.readthedocs.io), which includes a user guide with examples, a developer guide, and complete documentation of the application programming interface of the `dicomweb_client` Python package as well as the command line interface of the `dicomweb_client` program.
+
 
 
 ## Citation
