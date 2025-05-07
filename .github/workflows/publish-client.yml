@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      # url: TODO: Add URL to PyPI environment
+      url: https://pypi.org/p/pydicomweb-client
     permissions:
       id-token: write
     steps:
