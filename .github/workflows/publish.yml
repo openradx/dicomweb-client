@@ -1,37 +1,30 @@
-name: Publish Python Package to PyPI (OIDC with uv)
-
+name: Build and Publish Client to PyPI
 on:
   release:
     types: [published]
-
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  publish-to-pypi:
-    name: Build and publish to PyPI via OIDC with uv
+  build-and-publish-client:
     runs-on: ubuntu-latest
-
+    environment:
+      name: pypi
+      # url: TODO: Add URL to PyPI environment
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: adit-client
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Install uv
-        uses: astral-sh/setup-uv@v1
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.x'
-
-      - name: Install build dependencies using uv
-        run: uv install build
-
-      - name: Build the package
-        run: python -m build
-
-      - name: Publish to PyPI (OIDC)
+          version: "0.6.0"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+      - name: Build wheel and sdist
+        run: uv build
+      - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-            skip-existing: true
