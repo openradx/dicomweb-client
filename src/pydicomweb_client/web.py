@@ -21,7 +21,7 @@ from typing import (
     Union,
     Tuple,
 )
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
 from warnings import warn
 from xml.etree.ElementTree import (
     Element,
@@ -1659,7 +1659,7 @@ class DICOMwebClient:
             Study representations
             (see `Study Result Attributes <http://dicom.nema.org/medical/dicom/current/output/chtml/part18/sect_6.7.html#table_6.7.1-2>`_)
 
-        Notes
+        Note
         ----
         - The server may only return a subset of search results. In this case,
         a warning will notify the client that there are remaining results.
@@ -2013,6 +2013,7 @@ class DICOMwebClient:
         self,
         study_instance_uid: str,
         media_types: Optional[Tuple[Union[str, Tuple[str, str]], ...]] = None,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> List[pydicom.dataset.Dataset]:
         """Retrieve all instances of a study.
 
@@ -2023,6 +2024,8 @@ class DICOMwebClient:
         media_types: Union[Tuple[Union[str, Tuple[str, str]], ...], None], optional
             Acceptable media types and optionally the UIDs of the
             acceptable transfer syntaxes
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP GET query parameters
 
         Returns
         -------
@@ -2044,7 +2047,8 @@ class DICOMwebClient:
             self._get_study(
                 study_instance_uid=study_instance_uid,
                 media_types=media_types,
-                stream=False
+                stream=False,
+                additional_params=additional_params
             )
         )
 
@@ -2052,6 +2056,7 @@ class DICOMwebClient:
         self,
         study_instance_uid: str,
         media_types: Optional[Tuple[Union[str, Tuple[str, str]], ...]] = None,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> Iterator[pydicom.dataset.Dataset]:
         """Iterate over all instances of a study.
 
@@ -2062,6 +2067,8 @@ class DICOMwebClient:
         media_types: Union[Tuple[Union[str, Tuple[str, str]], ...], None], optional
             Acceptable media types and optionally the UIDs of the
             acceptable transfer syntaxes
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP GET query parameters
 
         Returns
         -------
@@ -2086,7 +2093,8 @@ class DICOMwebClient:
         return self._get_study(
             study_instance_uid=study_instance_uid,
             media_types=media_types,
-            stream=True
+            stream=True,
+            additional_params=additional_params
         )
 
     def retrieve_study_metadata(
@@ -2118,13 +2126,19 @@ class DICOMwebClient:
         url += '/metadata'
         return self._http_get_application_json(url, params=additional_params)
 
-    def delete_study(self, study_instance_uid: str) -> None:
+    def delete_study(
+        self,
+        study_instance_uid: str,
+        additional_params: Optional[Dict[str, Any]] = None
+    ) -> None:
         """Delete all instances of a study.
 
         Parameters
         ----------
         study_instance_uid: str
             Study Instance UID
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP DELETE query parameters
 
         Note
         ----
@@ -2141,6 +2155,12 @@ class DICOMwebClient:
                 'Study Instance UID is required for deletion of a study.'
             )
         url = self._get_studies_url(_Transaction.DELETE, study_instance_uid)
+        # Append query string if additional_params is provided
+        if additional_params:
+            additional_params_query_string = urlencode(
+                additional_params, doseq=True
+            )
+            url += f'?{additional_params_query_string}'
         self._http_delete(url)
 
     def _assert_uid_format(self, uid: str) -> None:
@@ -2207,7 +2227,7 @@ class DICOMwebClient:
             Series representations
             (see `Series Result Attributes <http://dicom.nema.org/medical/dicom/current/output/chtml/part18/sect_6.7.html#table_6.7.1-2a>`_)
 
-        Notes
+        Note
         ----
         - The server may only return a subset of search results. In this case,
         a warning will notify the client that there are remaining results.
@@ -2317,7 +2337,8 @@ class DICOMwebClient:
         self,
         study_instance_uid: str,
         series_instance_uid: str,
-        media_types: Optional[Tuple[Union[str, Tuple[str, str]], ...]] = None
+        media_types: Optional[Tuple[Union[str, Tuple[str, str]], ...]] = None,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> List[pydicom.dataset.Dataset]:
         """Retrieve all instances of a series.
 
@@ -2330,6 +2351,8 @@ class DICOMwebClient:
         media_types: Union[Tuple[Union[str, Tuple[str, str]], ...], None], optional
             Acceptable media types and optionally the UIDs of the
             acceptable transfer syntaxes
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP GET query parameters
 
         Returns
         -------
@@ -2352,7 +2375,8 @@ class DICOMwebClient:
                 study_instance_uid=study_instance_uid,
                 series_instance_uid=series_instance_uid,
                 media_types=media_types,
-                stream=False
+                stream=False,
+                additional_params=additional_params
             )
         )
 
@@ -2360,7 +2384,8 @@ class DICOMwebClient:
         self,
         study_instance_uid: str,
         series_instance_uid: str,
-        media_types: Optional[Tuple[Union[str, Tuple[str, str]], ...]] = None
+        media_types: Optional[Tuple[Union[str, Tuple[str, str]], ...]] = None,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> Iterator[pydicom.dataset.Dataset]:
         """Iterate over all instances of a series.
 
@@ -2373,6 +2398,8 @@ class DICOMwebClient:
         media_types: Union[Tuple[Union[str, Tuple[str, str]], ...], None], optional
             Acceptable media types and optionally the UIDs of the
             acceptable transfer syntaxes
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP GET query parameters
 
         Returns
         -------
@@ -2398,7 +2425,8 @@ class DICOMwebClient:
             study_instance_uid=study_instance_uid,
             series_instance_uid=series_instance_uid,
             media_types=media_types,
-            stream=True
+            stream=True,
+            additional_params=additional_params
         )
 
     def retrieve_series_metadata(
@@ -2525,7 +2553,8 @@ class DICOMwebClient:
     def delete_series(
         self,
         study_instance_uid: str,
-        series_instance_uid: str
+        series_instance_uid: str,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> None:
         """Delete all instances of a series.
 
@@ -2535,6 +2564,8 @@ class DICOMwebClient:
             Study Instance UID
         series_instance_uid: str
             Series Instance UID
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP DELETE query parameters
 
         Note
         ----
@@ -2563,6 +2594,12 @@ class DICOMwebClient:
             study_instance_uid,
             series_instance_uid
         )
+        # Append query string if additional_params is provided
+        if additional_params:
+            additional_params_query_string = urlencode(
+                additional_params, doseq=True
+            )
+            url += f'?{additional_params_query_string}'
         self._http_delete(url)
 
     def search_for_instances(
@@ -2741,7 +2778,8 @@ class DICOMwebClient:
     def store_instances(
         self,
         datasets: Sequence[pydicom.dataset.Dataset],
-        study_instance_uid: Optional[str] = None
+        study_instance_uid: Optional[str] = None,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> pydicom.dataset.Dataset:
         """Store instances.
 
@@ -2751,6 +2789,8 @@ class DICOMwebClient:
             Instances that should be stored
         study_instance_uid: Union[str, None], optional
             Study Instance UID
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP POST query parameters
 
         Returns
         -------
@@ -2770,6 +2810,12 @@ class DICOMwebClient:
             message += f' of study "{study_instance_uid}"'
         logger.info(message)
         url = self._get_studies_url(_Transaction.STORE, study_instance_uid)
+        # Append query string if additional_params is provided
+        if additional_params:
+            additional_params_query_string = urlencode(
+                additional_params, doseq=True
+            )
+            url += f'?{additional_params_query_string}'
         encoded_datasets = _iter_encoded_datasets(datasets)
         return self._http_post_multipart_application_dicom(
             url,
@@ -2780,7 +2826,8 @@ class DICOMwebClient:
         self,
         study_instance_uid: str,
         series_instance_uid: str,
-        sop_instance_uid: str
+        sop_instance_uid: str,
+        additional_params: Optional[Dict[str, Any]] = None
     ) -> None:
         """Delete specified instance.
 
@@ -2792,6 +2839,8 @@ class DICOMwebClient:
             Series Instance UID
         sop_instance_uid: str
             SOP Instance UID
+        additional_params: Union[Dict[str, Any], None], optional
+            Additional HTTP DELETE query parameters
 
         Note
         ----
@@ -2821,6 +2870,12 @@ class DICOMwebClient:
             series_instance_uid,
             sop_instance_uid
         )
+        # Append query string if additional_params is provided
+        if additional_params:
+            additional_params_query_string = urlencode(
+                additional_params, doseq=True
+            )
+            url += f'?{additional_params_query_string}'
         self._http_delete(url)
 
     def retrieve_instance_metadata(
